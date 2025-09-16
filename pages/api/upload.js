@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     }
 
     // Validate required environment variables
-    if (!process.env.CLIENT_EMAIL || !process.env.PRIVATE_KEY) {
+    if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
       console.error("Missing Google Drive credentials");
       return res.status(500).json({ error: "Server configuration error" });
     }
@@ -33,10 +33,13 @@ export default async function handler(req, res) {
     }
 
     try {
+      // Parse the service account key
+      const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+      
       const auth = new google.auth.JWT(
-        process.env.CLIENT_EMAIL,
+        serviceAccount.client_email,
         null,
-        process.env.PRIVATE_KEY.replace(/\\n/g, "\n"),
+        serviceAccount.private_key,
         ["https://www.googleapis.com/auth/drive.file"]
       );
 
