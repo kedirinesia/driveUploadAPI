@@ -1,3 +1,4 @@
 node_modules
 .env
-*.json
+google-credentials.js
+central-age-472314-i8-a1b3605bb607.json
