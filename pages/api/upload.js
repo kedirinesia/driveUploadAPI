@@ -23,6 +23,8 @@ export default async function handler(req, res) {
 
     // Validate required environment variables
     if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+
+      
       console.error("Missing Google Drive credentials");
       return res.status(500).json({ error: "Server configuration error" });
     }
