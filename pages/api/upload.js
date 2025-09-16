@@ -1,7 +1,6 @@
 const { google } = require("googleapis");
 const formidable = require("formidable");
 const fs = require("fs");
-const credentials = require("../../central-age-472314-i8-a1b3605bb607.json");
 
 export const config = {
   api: {
@@ -22,17 +21,25 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "File parse error" });
     }
 
+    // Validate required environment variables
+    if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+      console.error("Missing Google Drive credentials");
+      return res.status(500).json({ error: "Server configuration error" });
+    }
+
     // Validate file upload
     if (!files.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
     try {
-      // Use credentials from file
+      // Parse the service account key from environment variable
+      const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+      
       const auth = new google.auth.JWT(
-        credentials.client_email,
+        serviceAccount.client_email,
         null,
-        credentials.private_key,
+        serviceAccount.private_key,
         ["https://www.googleapis.com/auth/drive.file"]
       );
 
